@@ -1,4 +1,4 @@
-# Wahey: my own Whoop style recovery app
+# Wahey: a personal recovery app
 
 [![CI](https://github.com/SammyJ3000/wahey/actions/workflows/ci.yml/badge.svg)](https://github.com/SammyJ3000/wahey/actions/workflows/ci.yml)
 

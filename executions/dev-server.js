@@ -43,10 +43,10 @@ http.createServer(async (req, res) => {
   if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end('not found'); }
   res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
   if (DEV_KEY && rel === 'index.html') {
-    // CLOCK_OFFSET_MS shifts the page's clock (for recording an earlier day as "today"); local preview only.
+    // CLOCK_OFFSET_MS shifts the page's clock (to preview an earlier day as "today"); local preview only.
     const off = Number(process.env.CLOCK_OFFSET_MS || 0);
     const clock = off ? `<script>(()=>{const D=Date,off=${off};class F extends D{constructor(...a){if(a.length)super(...a);else super(D.now()+off);}static now(){return D.now()+off;}}window.Date=F;})()</script>` : '';
     return res.end(fs.readFileSync(file, 'utf8').replace('<head>', '<head>' + clock).replace('</head>', "<script>localStorage.setItem('ow_key','local-dev')</script></head>"));
   }
   fs.createReadStream(file).pipe(res);
-}).listen(PORT, () => console.log(`Own Whoop running on http://localhost:${PORT}`));
+}).listen(PORT, () => console.log(`Wahey running on http://localhost:${PORT}`));

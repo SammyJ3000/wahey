@@ -1,5 +1,5 @@
 {
-  "name": "own-whoop",
+  "name": "wahey",
   "private": true,
   "description": "Personal recovery app: index.html plus Vercel serverless functions. No build step.",
   "scripts": {
