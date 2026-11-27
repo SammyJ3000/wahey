@@ -91,7 +91,7 @@ To try the Claude parts, copy `.env.example` to `.env` and fill in `ANTHROPIC_AP
 npm test
 ```
 
-This runs the tests in `tests/` with Node's built in test runner. `tests/test-score.js` checks the scoring maths in `lib/score.js`: the recovery parts, the caps, the strain scale, the strain target and the bedtime. `tests/test-api-chat.js` checks the chat API offline: the `REMEMBER:` parsing, the memory rules and the handler. `fetch` is stubbed, so the tests need no network, no key and no `npm install`.
+This runs the tests in `tests/` with Node's built in test runner. `tests/test-score.js` checks the scoring maths in `lib/score.js`: the recovery parts, the caps, the strain scale, the strain target and the bedtime. `tests/test-api-health.js` checks that a `{ days }` post is the right shape and size, and that a server error reaches the client only as a plain message. `tests/test-api-chat.js` checks the chat API offline: the `REMEMBER:` parsing, the memory rules and the handler. `fetch` is stubbed, so the tests need no network, no key and no `npm install`.
 
 ```
 npm install
