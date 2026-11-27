@@ -14,6 +14,38 @@ const { fetchWellness, fillFrom } = require('../lib/intervals');
 
 const FILE = 'health/days.json';
 const MAX_BYTES = 4 * 1024 * 1024;
+const MAX_DAYS = 400;            // days in one { days } post: the importer sends 60 by default, a year at most is plenty
+
+// The fields a stored day may have (from lib/summarise.js and lib/intervals.js) and what each must be.
+const num = (v) => v === null || (typeof v === 'number' && Number.isFinite(v));
+const str = (v) => v === null || (typeof v === 'string' && v.length <= 80);
+const plain = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+const numList = (max) => (v) => v === null || (Array.isArray(v) && v.length <= max && v.every((x) => typeof x === 'number' && Number.isFinite(x)));
+const flat = (maxKeys) => (v) => v === null || (plain(v) && Object.keys(v).length <= maxKeys && Object.values(v).every((x) => num(x) || str(x)));
+const DAY_FIELDS = {
+  hrv_ms: num, hrv_n: num, hrv_from: str, rhr: num, sleep_score: num, sleep_hr: num, hr_max: num, steps: num, active_kcal: num,
+  weight_kg: num, body_fat_pct: num, spo2: num, resp_rate: num,
+  sleep: flat(12),
+  hr_buckets: numList(37),            // minutes in each 5 bpm band
+  hr_min: numList(2 * 1440),          // [minute, bpm] pairs, at most one per minute of the day
+  workouts: (v) => v === null || (Array.isArray(v) && v.length <= 50 && v.every(flat(8))),
+};
+
+// Checks a { days } post from the importer. Returns null when it is fine, or what is wrong.
+function checkDays(days) {
+  if (!Array.isArray(days) || !days.length) return 'days must be a non empty list';
+  if (days.length > MAX_DAYS) return `at most ${MAX_DAYS} days in one post`;
+  for (const d of days) {
+    if (!plain(d)) return 'each day must be an object';
+    if (typeof d.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(d.date) || Number.isNaN(Date.parse(d.date))) return 'each day needs a date as YYYY-MM-DD';
+    for (const [k, v] of Object.entries(d)) {
+      if (k === 'date') continue;
+      if (!Object.prototype.hasOwnProperty.call(DAY_FIELDS, k)) return `${d.date}: unknown field ${k.slice(0, 40)}`;
+      if (!DAY_FIELDS[k](v)) return `${d.date}: ${k} has the wrong shape`;
+    }
+  }
+  return null;
+}
 
 function parseBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
@@ -79,7 +111,11 @@ module.exports = async (req, res) => {
         return res.status(200).json({ ok: true, date, hrv_ms: Math.round(ms) });
       }
       let incoming;
-      if (body.days) incoming = Object.fromEntries(body.days.map((d) => [d.date, d]));
+      if (body.days) {
+        const bad = checkDays(body.days);
+        if (bad) return res.status(400).json({ error: bad });
+        incoming = Object.fromEntries(body.days.map((d) => [d.date, d]));
+      }
       else if (body.samples) incoming = summarise(fromShortcut(body.samples));
       else return res.status(400).json({ error: 'expected { samples } or { days }' });
 
@@ -97,7 +133,9 @@ module.exports = async (req, res) => {
     }
     return res.status(405).json({ error: 'method not allowed' });
   } catch (err) {
-    console.error('health failed', err);
-    return res.status(500).json({ error: 'health failed: ' + err.message });
+    console.error('health failed', err);                       // the detail stays in the server log
+    return res.status(500).json({ error: 'health failed' });
   }
 };
+
+module.exports._test = { checkDays, MAX_DAYS };
