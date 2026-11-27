@@ -36,7 +36,7 @@ Gym app backup (read only) --> /api/gym --------------> index.html (scores worke
 2. `lib/summarise.js` turns the raw samples into one summary per day: HRV, resting heart rate, sleep and its stages, minutes in each heart rate band, steps, weight and so on. A night's sleep belongs to the morning it ends.
 3. Each time the app opens, `lib/intervals.js` fills gaps with HRV and sleep from intervals.icu, because my watch app never writes those to Apple Health.
 4. `api/gym.js` reads my gym app's backup, read only, and passes on sessions, sets, top sets and estimated one rep maxes.
-5. The app (`index.html`) works out recovery, strain, sleep need and the bedtime from the stored days. Scoring lives in the page, so tuning it never needs an API change.
+5. The app (`index.html`) works out recovery, strain, sleep need and the bedtime from the stored days. The maths is in `lib/score.js`, which the page loads as a plain script, so tuning it never needs an API change and the same code runs in the tests.
 6. Claude does three jobs:
    - `api/coach.js` writes the morning call from today's numbers and the last week. The prompt is in `prompts/coach.md`. One call a day is cached, and it is asked again only when the score changes.
    - `api/chat.js` is "Ask the coach", a conversation about the day's numbers with a short list of facts about the user. The prompt is in `prompts/chat.md`.
@@ -89,7 +89,7 @@ To try the Claude parts, copy `.env.example` to `.env` and fill in `ANTHROPIC_AP
 npm test
 ```
 
-This runs `tests/test-api-chat.js`, which checks the chat API offline: the `REMEMBER:` parsing, the memory rules and the handler. `fetch` is stubbed, so it needs no network, no key and no `npm install`.
+This runs the tests in `tests/` with Node's built in test runner. `tests/test-score.js` checks the scoring maths in `lib/score.js`: the recovery parts, the caps, the strain scale, the strain target and the bedtime. `tests/test-api-chat.js` checks the chat API offline: the `REMEMBER:` parsing, the memory rules and the handler. `fetch` is stubbed, so the tests need no network, no key and no `npm install`.
 
 ```
 npm install
@@ -112,7 +112,7 @@ Other scripts:
 
 ## Stack
 
-- React 18 and Babel standalone from a CDN, in one `index.html`. No build step. The app is one file on purpose: it deploys as a static page with nothing to compile, and the whole front end reads top to bottom in one place.
+- React 18 and Babel standalone from a CDN, in one `index.html`, with the scoring maths beside it in `lib/score.js`. No build step. The front end is one page on purpose: it deploys as static files with nothing to compile, and the interface reads top to bottom in one place.
 - Vercel serverless functions in Node (`api/`), shared logic in `lib/`.
 - Vercel Blob for storage. Plain files in `tmp/store/` when run locally.
 - The Claude API, called with plain `fetch`. No SDK.
