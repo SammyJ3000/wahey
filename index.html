@@ -655,9 +655,8 @@ function strainSentence({ strain, lo, hi, live, yard, trained }) {
 /* ================================================================ Strength
    Progress from the gym app's own log (read only): kg moved and sessions per week, each lift's latest top set and
    estimated one-rep max, and personal bests. Uses the app's mean, clamp, col, Icon, Seg, useCount, isoToday.
-   Works on today's /api/gym (sets and volume per exercise) and gets richer when gym.js also sends
-   top { weight, reps } or { secs } and e1rm per exercise (see gym-api.patch.md). Nothing here is ever invented:
-   a figure the gym link didn't send is left out, not guessed. */
+   Reads sets and volume per exercise from /api/gym, plus top { weight, reps } or { secs } and e1rm where the backup
+   has them. Nothing here is ever invented: a figure the gym link didn't send is left out, not guessed. */
 
 const ST_DAY = 864e5;
 const stT = (iso) => Date.parse(iso + 'T12:00:00Z');

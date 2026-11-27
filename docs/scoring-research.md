@@ -24,7 +24,7 @@ Third-party (estimates):
 - Need = baseline + strain + sleep debt − naps. https://developer.whoop.com/docs/developing/user-data/sleep
 - Since May 2025 sleep performance blends hours vs need, consistency, efficiency and sleep stress (weights unpublished).
 
-## Proposed Wahey recovery v2 (heuristic, not WHOOP's formula)
-- HRV: 58 + 130·ln(HRV / usual), capped at +30%.
+## Wahey recovery v2, as built in `lib/score.js` (heuristic, not WHOOP's formula)
+- HRV: 58 + 130·ln(HRV / usual), with the ratio capped at +30% and at ln −0.45 (about −36%).
 - Resting HR: −1.5 points per bpm beyond 1 bpm from usual, capped ±9.
 - Sleep: 0.4 points per % of need around 85%, capped −12 / +6.
