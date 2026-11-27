@@ -12,11 +12,14 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@vercel/blob": "^2.8.2"
+    "@vercel/blob": "^2.9.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "eslint": "^9.39.5",
     "globals": "^16.5.0"
+  },
+  "overrides": {
+    "zod": "^4.6.6"
   }
 }
