@@ -74,3 +74,10 @@ What changed in Wahey, newest last. Personal details and readings are not includ
 
 - When HRV has not arrived, "Type it in from Zepp" saves the figure from the Zepp app. The figure from intervals.icu replaces it when it arrives.
 - Why HRV went missing: intervals.icu only pulls from Zepp when its website is opened, and Zepp's feed runs about a day behind the Zepp app.
+
+## 27 Nov 2026: the code split into files
+
+- `index.html` was one file of about 3,000 lines, with all the styles and the whole app inline. It is now markup only. The styles are in `css/` and the app is in `js/`, with one file per screen plus the shared pieces. Babel still compiles it in the browser, so there is still no build step.
+- The helpers with no DOM moved into `lib/` beside `score.js`, each with its own tests: dates and durations, the warning and strain sentences, the Strength maths, the journal's habit effects and body age.
+- ESLint now checks the app's JSX as well as the server code.
+- Nothing on screen changed. Every screen was checked against the old page with the same fictional data, and they matched pixel for pixel.

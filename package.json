@@ -1,7 +1,7 @@
 {
   "name": "wahey",
   "private": true,
-  "description": "Personal recovery app: index.html plus Vercel serverless functions. No build step.",
+  "description": "Personal recovery app: a static page (index.html, css/, js/, lib/) plus Vercel serverless functions. No build step.",
   "scripts": {
     "start": "node executions/dev-server.js",
     "sample-data": "node executions/make_sample_data.js",

@@ -25,7 +25,7 @@ Watch -> Zepp -> Apple Health -> iPhone Shortcut (when the alarm stops)
                                POST /api/health ---> Vercel Blob store
                                         ^                    |
 intervals.icu (HRV, sleep) -------------+                    v
-Gym app backup (read only) --> /api/gym --------------> index.html (scores worked out here)
+Gym app backup (read only) --> /api/gym --------------> the page (scores worked out here)
                                                              |
                                                              v
                                          /api/coach, /api/chat, /api/journal (Claude)
@@ -38,7 +38,7 @@ Gym app backup (read only) --> /api/gym --------------> index.html (scores worke
 2. `lib/summarise.js` turns the raw samples into one summary per day: HRV, resting heart rate, sleep and its stages, minutes in each heart rate band, steps, weight and so on. A night's sleep belongs to the morning it ends.
 3. Each time the app opens, `lib/intervals.js` fills gaps with HRV and sleep from intervals.icu, because my watch app never writes those to Apple Health.
 4. `api/gym.js` reads my gym app's backup, read only, and passes on sessions, sets, top sets and estimated one rep maxes.
-5. The app (`index.html`) works out recovery, strain, sleep need and the bedtime from the stored days. The maths is in `lib/score.js`, which the page loads as a plain script, so tuning it never needs an API change and the same code runs in the tests.
+5. The page works out recovery, strain, sleep need and the bedtime from the stored days. The maths is in `lib/score.js`, which the page loads as a plain script, so tuning it never needs an API change and the same code runs in the tests.
 6. Claude does three jobs:
    - `api/coach.js` writes the morning call from today's numbers and the last week. The prompt is in `prompts/coach.md`. One call a day is cached, and it is asked again only when the score changes.
    - `api/chat.js` is "Ask the coach", a conversation about the day's numbers with a short list of facts about the user. The prompt is in `prompts/chat.md`.
@@ -91,14 +91,14 @@ To try the Claude parts, copy `.env.example` to `.env` and fill in `ANTHROPIC_AP
 npm test
 ```
 
-This runs the tests in `tests/` with Node's built in test runner. `tests/test-score.js` checks the scoring maths in `lib/score.js`: the recovery parts, the caps, the strain scale, the strain target and the bedtime. `tests/test-api-health.js` checks that a `{ days }` post is the right shape and size, and that a server error reaches the client only as a plain message. `tests/test-api-chat.js` checks the chat API offline: the `REMEMBER:` parsing, the memory rules and the handler. `fetch` is stubbed, so the tests need no network, no key and no `npm install`.
+This runs the tests in `tests/` with Node's built in test runner. `tests/test-score.js` checks the scoring maths in `lib/score.js`: the recovery parts, the caps, the strain scale, the strain target and the bedtime. The tests for `format.js`, `words.js`, `strength.js`, `habits.js` and `body-age.js` check the other helpers the page uses: dates and durations, the warning and strain sentences, strength weeks and personal bests, what each habit does to the next morning, and the body age inputs and total. `tests/test-api-health.js` checks that a `{ days }` post is the right shape and size, and that a server error reaches the client only as a plain message. `tests/test-api-chat.js` checks the chat API offline: the `REMEMBER:` parsing, the memory rules and the handler. `fetch` is stubbed, so the tests need no network, no key and no `npm install`.
 
 ```
 npm install
 npm run lint
 ```
 
-`npm run lint` checks `api/`, `lib/`, `executions/` and `tests/` with ESLint. `index.html` is not linted, because its React code is compiled in the browser. `.github/workflows/ci.yml` runs the lint and the tests on every push and pull request.
+`npm run lint` checks `api/`, `lib/`, `executions/`, `tests/` and the JSX in `js/` with ESLint. Each file in `js/` lists the names it takes from earlier files in a `/* global */` comment and the names it gives to later files in an `/* exported */` comment, so using a name that is not listed fails the lint, and so does listing one that is never used. Two small rules in `eslint.config.mjs` count `<Tile />` as a use of `Tile`, which ESLint does not do by itself. `.github/workflows/ci.yml` runs the lint and the tests on every push and pull request.
 
 ### Deploy to Vercel
 
@@ -112,9 +112,44 @@ Other scripts:
 - `executions/import_health_export.js` backfills from Apple Health's "Export All Health Data" zip, into the local store or a live deploy.
 - `api/gym.js` expects a backup in my gym app's format. Without `GYM_API_URL` the app runs without gym data.
 
+## Project structure
+
+```
+index.html          the page: markup, then the stylesheets and scripts in load order
+css/                styles: tokens and page furniture, components, coach, journal, body age, motion last
+js/                 the React app, as JSX compiled in the browser
+  core.jsx          React hooks, the lib/ functions, the colour palette and the API client
+  ui.jsx            small shared pieces: tiles, labels, icons, counters, the detail screen frame
+  sync.jsx          pull to sync
+  charts.jsx        the SVG charts
+  journal.jsx       the journal and what affects you
+  chat.jsx          ask the coach
+  body-age.jsx      the body age tiles
+  screens/          one file per screen: today, recovery, sleep, strain, trends, strength
+  app.jsx           the shell: loading, the passphrase, the tabs and moving between screens
+lib/                plain JavaScript with no DOM
+  score.js          the scoring maths
+  format.js         durations, clock times and dates
+  words.js          the sentences built from the numbers
+  strength.js       weeks, lifts and personal bests from the gym log
+  habits.js         what each journal habit does to the next morning
+  body-age.js       the body age inputs and total
+  summarise.js      server side: Apple Health samples into one summary per day
+  intervals.js      server side: HRV and sleep from intervals.icu
+  store.js          server side: Vercel Blob, or plain files locally
+  auth.js           server side: the passphrase check
+api/                Vercel serverless functions: health, gym, coach, chat, journal
+prompts/            the Claude prompts, in Markdown
+executions/         the dev server, the sample data and the Apple Health importer
+tests/              node:test tests for lib/ and the API
+docs/               the Shortcut steps, the scoring research and the body age method
+```
+
+The files in `lib/` that the page uses work in both places: in the browser each one sets a single global, such as `window.Score`, and in Node it is a CommonJS module, so the page and the tests run the same code. The files in `js/` run as classic scripts in the order `index.html` lists them and share one global scope.
+
 ## Stack
 
-- React 18 and Babel standalone from a CDN, in one `index.html`, with the scoring maths beside it in `lib/score.js`. No build step. The front end is one page on purpose: it deploys as static files with nothing to compile, and the interface reads top to bottom in one place.
+- React 18 and Babel standalone from a CDN. No build step: Babel compiles the JSX in `js/` in the browser, so the front end deploys as static files with nothing to compile.
 - Vercel serverless functions in Node (`api/`), shared logic in `lib/`.
 - Vercel Blob for storage. Plain files in `tmp/store/` when run locally.
 - The Claude API, called with plain `fetch`. No SDK.
