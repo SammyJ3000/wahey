@@ -121,6 +121,8 @@ Other scripts:
 - Apple Health through an iPhone Shortcut, intervals.icu, and a gym app's backup.
 - Phosphor icons. Cabinet Grotesk and General Sans fonts.
 
+This repo was published from a private working copy, so earlier history is not included.
+
 ## About me
 
-I'm Sam Jordan. I design and build apps and AI tools with Claude Code. More of my work: https://sam-jordan-cv.vercel.app
+I'm Sam Jordan. I design and build apps and AI tools. More of my work: https://sam-jordan-cv.vercel.app
