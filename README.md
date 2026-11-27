@@ -50,11 +50,11 @@ Gym app backup (read only) --> /api/gym --------------> index.html (scores worke
 
 **Habit extraction returns JSON, and the code does not trust it.** The journal prompt asks for one JSON object and nothing else. `extractHabits` in `api/journal.js` still copes with code fences, a sentence around the JSON, a bare array and trailing commas. Slugs are steered to a fixed list (`alcohol`, `late_meal`, `screen_in_bed` and so on), with aliases, so the same habit lands on the same name every day. If Claude cannot be reached, the note is still saved. The prompt also says the note is only data, so instructions inside it are ignored.
 
-**Everything is compared with your own normal.** Recovery is not measured against population averages. HRV and resting heart rate are held against the user's own last 30 days. A normal morning scores 58, and HRV above or below your usual moves it most. While there are fewer than 30 nights, the spread has a floor so a run of similar nights does not make the score jump. The screens say "still learning your normal" until then. The research behind the shape is in `docs/scoring-research.md`. These are my own approximations, not Whoop's formulas.
+**Everything is compared with your own normal.** Recovery is not measured against population averages. HRV and resting heart rate are held against the user's own last 30 days. A normal morning scores 58, and HRV above or below your usual moves it most. HRV counts as a ratio to your usual and is capped both ways, so one odd night cannot swing the score to an extreme. There is no score until there are 5 earlier nights, and the screens say "still learning your normal" until there are 30. The research behind the shape is in `docs/scoring-research.md`. These are my own approximations, not a copy of any commercial formula.
 
 **Honest about gaps.** No number is ever invented. If there is no HRV, there is no recovery score, and the app says what is missing. The coach prompts tell Claude the same: never invent a number, a session or a trend.
 
-**Prompts and the model live outside the code.** Prompts are Markdown files in `prompts/`. The model name is in `config.json`. Replies that hit the token limit are never shown or cached.
+**Prompts and the model live outside the code.** Prompts are Markdown files in `prompts/`. The model name is in `config.json`. A morning call that hits the token limit is never shown or cached.
 
 ## What broke and how I fixed it
 
@@ -65,7 +65,7 @@ The full list of changes is in `CHANGELOG.md`.
 - **No HRV or sleep from the phone.** Zepp writes neither to Apple Health, and an empty Health query stops the whole Shortcut. I took HRV and sleep from intervals.icu instead and fill gaps on every load.
 - **HRV still went missing some mornings.** intervals.icu only pulls from Zepp when its website is opened, and Zepp's feed runs about a day behind. I added a way to type the figure in from the Zepp app. The real figure replaces it when it arrives.
 - **Sleep was short and steps were doubled.** Apple Health's sleep stages added up to less than Zepp's total, and Health counted phone and watch steps together. Zepp's totals now win, and the stages are stretched to match.
-- **The score jumped around in the first weeks.** With only a few similar nights the spread was tiny, so small changes looked huge. A minimum spread now applies until there are 30 nights.
+- **The score jumped around in the first weeks.** The first version scored HRV against the spread of recent nights. With only a few similar nights the spread was tiny, so small changes looked huge. I added a minimum spread at first, then changed the scoring to compare HRV with your usual as a capped ratio, which does not depend on the spread at all.
 - **A gym session was filed under the wrong day.** The gym app kept the day an unused session was opened. `config.json` has a `gym_corrections` block for one off fixes like this. It is never written back to the gym app.
 
 ## Setup and run
@@ -81,7 +81,7 @@ node executions/dev-server.js           # or: npm start
 
 Open http://localhost:4321. With no `.env`, the dev server uses a local passphrase and hands it to the page, so it opens straight away. Data is read from and written to `tmp/store/`. The sample data is 60 fictional days for Alex.
 
-Without `ANTHROPIC_API_KEY` the scores and screens still work. The coach, chat and journal parsing say the key is not set.
+Without `ANTHROPIC_API_KEY` the scores and screens still work. The Claude parts do not: the morning call does not come through, the chat says the key is not set, and journal notes are saved without habits pulled out of them.
 
 To try the Claude parts, copy `.env.example` to `.env` and fill in `ANTHROPIC_API_KEY`. If you also set `APP_KEY`, the page asks for it. Run `node executions/dev-server.js --dev-key` to keep your API keys but use the local passphrase.
 
@@ -98,7 +98,7 @@ npm install
 npm run lint
 ```
 
-`npm run lint` checks `api/`, `lib/`, `executions/` and `tests/` with ESLint. `index.html` is not linted, because its React code is compiled in the browser. `.github/workflows/ci.yml` runs the lint and the tests on every push and pull request once the folder is on GitHub.
+`npm run lint` checks `api/`, `lib/`, `executions/` and `tests/` with ESLint. `index.html` is not linted, because its React code is compiled in the browser. `.github/workflows/ci.yml` runs the lint and the tests on every push and pull request.
 
 ### Deploy to Vercel
 

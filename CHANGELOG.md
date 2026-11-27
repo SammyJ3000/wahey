@@ -64,7 +64,7 @@ What changed in Wahey, newest last. Personal details and readings are not includ
 
 ## 12 Nov 2026: recovery scoring v2
 
-- Recovery now follows the shape Whoop has published: a normal morning is 58, HRV against your usual moves it most, and resting heart rate and sleep nudge it. With no HRV there is no score, and the app says it is waiting for HRV. The research is in `docs/scoring-research.md`.
+- Recovery now follows the shape Whoop has published: a normal morning is 58, HRV against your usual moves it most, and resting heart rate and sleep nudge it. With no HRV there is no score, and the app says it is waiting for HRV. HRV now counts as a capped ratio to your usual, so the minimum spread from 11 Nov no longer plays a part. The research is in `docs/scoring-research.md`.
 - Zepp's sleep total and step count (through intervals.icu) now win over Apple Health's, which ran short on sleep and counted phone and watch steps together.
 - The app refreshes when it is reopened.
 - Pull down to sync on the main screens. On an iPhone it runs the Shortcut and waits until the server has heard from the phone; elsewhere it is a plain refresh.
