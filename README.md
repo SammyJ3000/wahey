@@ -1,5 +1,7 @@
 # Wahey: my own Whoop style recovery app
 
+[![CI](https://github.com/SammyJ3000/wahey/actions/workflows/ci.yml/badge.svg)](https://github.com/SammyJ3000/wahey/actions/workflows/ci.yml)
+
 ![Wahey on a phone: the morning recovery score with Claude's call for the day, 30 night trends and the recovery breakdown, all from fictional demo data](docs/images/preview.png)
 
 *Screenshots use fictional demo data.*
@@ -68,7 +70,7 @@ These come from `logs/CHANGELOG.md`.
 
 ## Setup and run
 
-You need Node 20 or later.
+You need Node 22 or later.
 
 ### Run it locally with demo data
 
