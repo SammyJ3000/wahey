@@ -7,7 +7,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT || 4321);
-const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript', '.json': 'application/json', '.woff2': 'font/woff2', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript', '.jsx': 'text/javascript', '.json': 'application/json', '.woff2': 'font/woff2', '.png': 'image/png', '.svg': 'image/svg+xml' };
 
 const envFile = path.join(ROOT, '.env');
 if (fs.existsSync(envFile)) {
