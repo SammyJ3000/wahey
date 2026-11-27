@@ -2,7 +2,7 @@
 executions
 tests
 docs
-logs
+CHANGELOG.md
 inputs
 tmp
 .env*

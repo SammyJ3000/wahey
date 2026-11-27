@@ -58,7 +58,7 @@ Gym app backup (read only) --> /api/gym --------------> index.html (scores worke
 
 ## What broke and how I fixed it
 
-These come from `logs/CHANGELOG.md`.
+The full list of changes is in `CHANGELOG.md`.
 
 - **The morning call stopped mid sentence.** The model thinks before it writes, and thinking counts against `max_tokens`. The limit was too low. I raised it, and a reply cut short is now never shown or saved.
 - **Afternoon heart rate landed in the morning.** The iPhone was on the 12 hour clock and the date parser ignored "pm". A gym session's heart rate window came up empty. I fixed the parser in `lib/summarise.js` to honour am and pm.
