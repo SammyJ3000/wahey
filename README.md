@@ -1,5 +1,7 @@
 # Wahey: my own Whoop style recovery app
 
+![Wahey on a phone: the morning recovery score with Claude's call for the day, 30 night trends and the recovery breakdown, all from fictional demo data](docs/images/preview.png)
+
 ## What it is
 
 I built my own Whoop style recovery app. It gives me a recovery score each morning, plus strain, sleep and trends, from a cheap watch, a smart scale and my gym app. Claude reads the numbers and gives me a short call for the day. I also made a YouTube video about it: https://youtu.be/YKrMGia0X2Y
