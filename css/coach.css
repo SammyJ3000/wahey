@@ -1,0 +1,104 @@
+/* Wahey: the chat with the coach, its sheet and memory list, and the pull to sync ring and bar. */
+
+/* ---------------------------------------------------------------- ask the coach
+   The way in is a well inside the lead unit, straight under Claude's call. White is the action. No floating button. */
+.call.has-ask { padding-bottom: var(--s3); }
+.ask { padding: 0 var(--s5) var(--s5); }
+.ask-open { display: flex; align-items: center; gap: var(--s2); width: 100%; height: 48px; padding: 0 6px 0 14px; border-radius: var(--r-ctl); background: var(--bg); color: var(--muted); font-size: 15px; transition: transform 140ms var(--ease-out); }
+.ask-open:active { transform: scale(.98); }
+.ask-open > span { flex: 1; }
+.ask-open small { font-size: 12.5px; color: var(--muted); }
+.ask-go { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-size: 17px; font-style: normal; }
+.ask-sug { display: flex; gap: 6px; list-style: none; overflow-x: auto; margin: var(--s2) calc(var(--s5) * -1) -6px; padding: 0 var(--s5); scrollbar-width: none; }
+.ask-sug::-webkit-scrollbar { display: none; }
+.ask-sug .chip { background: transparent; box-shadow: inset 0 0 0 1px var(--line2); color: var(--soft); }
+
+/* The sheet: full height, slides on transform alone and follows the finger when dragged by its head.
+   The page behind is locked and inert while it is open. Leaving is quicker than arriving. */
+.ch-sheet { position: fixed; inset: 0; z-index: 20; }
+.ch-back { position: absolute; inset: 0; background: rgba(8, 11, 13, .7); opacity: 0; transition: opacity 240ms ease; }
+.ch-panel { position: absolute; left: 0; right: 0; bottom: 0; top: calc(env(safe-area-inset-top) + 10px); max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; background: var(--tile2); border-radius: 28px 28px 0 0; transform: translateY(100%); transition: transform 280ms var(--ease-drawer); }
+.ch-sheet.on .ch-back { opacity: 1; }
+.ch-sheet.on .ch-panel { transform: none; transition-duration: 420ms; }
+.ch-sheet.drag .ch-panel, .ch-sheet.drag .ch-back { transition: none; }
+.ch-head { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: 18px 10px 0 var(--s5); touch-action: none; }
+.ch-head::before { content: ''; position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--line2); }
+.ch-head h2 { font: 700 26px/1.1 var(--display); letter-spacing: -.02em; }
+.ch-ico { flex: none; width: 44px; height: 44px; border-radius: var(--r-ctl); display: grid; place-items: center; color: var(--muted); font-size: 18px; transition: transform 140ms var(--ease-out), opacity 200ms; }
+.ch-ico:active { transform: scale(.94); }
+.ch-ico:disabled { opacity: .4; }
+.ch-tabs { padding: var(--s3) var(--s5) 14px; border-bottom: 1px solid var(--line2); }
+.ch-tabs .seg { background: var(--bg); margin-bottom: 0; }
+.ch-tabs .seg button { height: 44px; }
+/* Pull down to sync. A small ring drops from the top edge, fills as you pull, spins while it fetches, then ticks. */
+.ptr { position: fixed; z-index: 60; left: 50%; top: calc(env(safe-area-inset-top, 0px) - 52px); width: 44px; height: 44px; margin-left: -22px; border-radius: 50%;
+  background: var(--tile-2, #262d33); box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 10px 28px rgba(0,0,0,.45); pointer-events: none; opacity: 0; will-change: transform, opacity; }
+.ptr svg { display: block; width: 44px; height: 44px; overflow: visible; }
+.ptr .trk { fill: none; stroke: rgba(255,255,255,.14); stroke-width: 3; }
+.ptr .arc { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; transform-origin: 22px 22px; transform: rotate(-90deg); }
+.ptr .tick { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 16; stroke-dashoffset: 16; }
+.ptr.settle { transition: transform 280ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms ease-out; }
+.ptr.armed .ring { transform: scale(1.08); }
+.ptr .ring { transform-origin: 22px 22px; transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+.ptr.spin .arc { animation: ptr-spin 720ms linear infinite; }
+.ptr.done .arc { transition: stroke-dashoffset 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+.ptr.done .tick { transition: stroke-dashoffset 240ms cubic-bezier(0.23, 1, 0.32, 1) 80ms; stroke-dashoffset: 0; }
+@keyframes ptr-spin { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+@media (prefers-reduced-motion: reduce) { .ptr.spin .arc { animation-duration: 1600ms; } .ptr.settle { transition: opacity 200ms ease; } }
+.syncbar { position: fixed; z-index: 61; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px); transform: translateX(-50%); max-width: calc(100vw - 32px);
+  padding: 9px 16px 11px; border-radius: 999px; overflow: hidden; background: var(--tile-2, #262d33); box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 10px 28px rgba(0,0,0,.45);
+  font-size: 13px; font-weight: 500; color: var(--ink); white-space: nowrap; pointer-events: none; animation: syncbar-in 240ms cubic-bezier(0.23, 1, 0.32, 1); }
+.syncbar span { display: inline-flex; align-items: center; gap: 6px; }
+.syncbar i { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(255,255,255,.12); }
+.syncbar i::after { content: ''; position: absolute; inset: 0; background: #fff; transform-origin: left; }
+.syncbar.busy i::after { width: 40%; animation: syncbar-run 1100ms cubic-bezier(0.77, 0, 0.175, 1) infinite; }
+.syncbar.end i::after { transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1); }
+@keyframes syncbar-in { from { opacity: 0; transform: translate(-50%, -10px); } }
+@keyframes syncbar-run { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) { .syncbar { animation: none; } .syncbar.busy i::after { animation-duration: 2400ms; } }
+html { overscroll-behavior-y: none; }
+.ch-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: var(--s5) var(--s5) var(--s6); }
+/* The user's question is a dark well on the right. Claude's answer is plain text, set like the morning call. */
+.ch-q { width: fit-content; max-width: 84%; margin: 0 0 var(--s4) auto; padding: 10px 14px; border-radius: var(--r-ctl); background: var(--bg); font-size: 15px; line-height: 1.45; color: var(--ink); overflow-wrap: anywhere; }
+.ch-unsent { color: var(--muted); }
+.ch-a { margin-bottom: 28px; }
+.ch-a p { font-size: 16px; line-height: 1.55; color: var(--soft); text-wrap: pretty; }
+.ch-a p + p { margin-top: 10px; }
+.ch-a p b { color: var(--ink); font-weight: 600; }
+.ch-wait { margin-bottom: 28px; }
+.ch-intro { font-size: 15px; line-height: 1.5; color: var(--muted); text-wrap: pretty; margin-bottom: var(--s4); }
+.ch-asks { list-style: none; display: grid; gap: var(--s2); }
+.ch-asks button { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); width: 100%; min-height: 48px; padding: 10px 14px; border-radius: var(--r-ctl); box-shadow: inset 0 0 0 1px var(--line2); font-size: 15px; line-height: 1.35; color: var(--soft); transition: transform 140ms var(--ease-out); }
+.ch-asks button:active { transform: scale(.98); }
+.ch-asks .ph { font-size: 15px; color: var(--muted); }
+.ch-err { font-size: 14px; line-height: 1.5; color: var(--muted); margin-bottom: var(--s5); }
+.ch-txt { min-height: 44px; padding: 0 10px; border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--muted); }
+.ch-strong { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 4px; }
+.ch-clear { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line2); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.ch-clear .ch-txt:first-of-type, .ch-err .ch-txt { margin-left: -10px; }
+.ch-err .ch-txt { display: block; }
+/* Claude may suggest a line to remember. It is only a suggestion until it is tapped. */
+.ch-rem { display: flex; align-items: flex-start; gap: 2px; margin: 14px -10px 0 0; }
+.ch-rem-save { flex: 1; display: flex; align-items: flex-start; gap: 9px; min-height: 44px; padding: 11px 14px; border-radius: var(--r-ctl); box-shadow: inset 0 0 0 1px var(--line2); font-size: 15px; line-height: 1.4; color: var(--ink); transition: transform 140ms var(--ease-out), opacity 200ms; }
+.ch-rem-save:active { transform: scale(.98); }
+.ch-rem-save .ph { font-size: 16px; margin-top: 2px; color: var(--muted); }
+.ch-rem-save:disabled { opacity: .5; }
+.ch-rem-done { display: flex; align-items: center; gap: 7px; margin-top: var(--s3); font-size: 13px; color: var(--muted); }
+/* What I know about you: plain lines, hairlines between, each one editable. */
+.ch-mem > .cap { font-size: 13px; }
+.ch-facts { list-style: none; margin-top: var(--s3); }
+.ch-facts li { display: flex; align-items: center; min-height: 56px; border-top: 1px solid var(--line2); }
+.ch-fact { flex: 1; padding: 14px 8px 14px 0; font-size: 15px; line-height: 1.4; color: var(--ink); overflow-wrap: anywhere; }
+.ch-facts li > .ch-ico:last-child { margin-right: -12px; }
+.ch-edit { flex: 1; display: flex; align-items: center; gap: 2px; padding: 6px 0; }
+.ch-edit .ch-in { height: 44px; }
+.ch-none { margin-top: var(--s4); padding-top: var(--s4); border-top: 1px solid var(--line2); font-size: 15px; line-height: 1.5; color: var(--muted); }
+.ch-mem .ch-err { margin-top: 14px; }
+/* One bar pinned to the bottom: a question in the chat, a new line in the list. 16px type so the phone doesn't zoom. */
+.ch-bar { display: flex; align-items: center; gap: var(--s2); padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line2); }
+.ch-in { flex: 1; min-width: 0; height: 48px; padding: 0 var(--s4); border-radius: var(--r-ctl); background: var(--bg); border: 1px solid var(--line2); color: var(--ink); font: inherit; font-size: 16px; transition: border-color 200ms; }
+.ch-in::placeholder { color: var(--muted); }
+.ch-in:focus { outline: none; border-color: var(--ink); }
+.ch-send { flex: none; width: 48px; height: 48px; border-radius: var(--r-ctl); display: grid; place-items: center; background: var(--ink); color: var(--bg); font-size: 19px; transition: opacity 200ms, transform 140ms var(--ease-out); }
+.ch-send:active { transform: scale(.94); }
+.ch-send:disabled { opacity: .35; cursor: default; }

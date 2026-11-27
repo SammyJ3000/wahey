@@ -1,0 +1,51 @@
+/* Wahey: colour, type and spacing tokens, then the page furniture every screen shares. */
+
+:root {
+  /* Slate palette. Colour says which part of the day you are looking at; numbers are never coloured.
+     Green, yellow and red mean the recovery state and nothing else. Blue is effort (strain, heart rate, training).
+     Blue-grey is sleep. White is the action or the selection. No other hues, no glows, one gradient (the page fade). */
+  --bg: #12171b; --bg-top: #232c33; --tile: #1d2328; --tile2: #262d33; --line: #2c343b; --line2: #3a444d; --track: #2a3239;
+  --ink: #ffffff; --soft: #dfe5ea; --muted: #aeb9c2; --faint: #7d8a95;
+  --green: #16ec06; --amber: #ffde00; --red: #ff3b4e;
+  --strain: #0093e7; --strain-l: #7cc6f2; --strain-d: #0a5687;
+  --sleep: #7ba1bb; --sleep-rem: #b9cfdd; --sleep-light: #3f5668;
+  --display: 'Cabinet Grotesk', -apple-system, sans-serif;
+  --body: 'General Sans', -apple-system, sans-serif;
+  /* spacing: 4-unit base */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px;
+  --r-tile: 20px; --r-hero: 26px; --r-ctl: 14px;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);        /* entering, responding */
+  --ease-drawer: cubic-bezier(.32, .72, 0, 1);     /* things that slide: screens, pills, sheets */
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+body { min-height: 100dvh; color: var(--ink); font: 400 15px/1.5 var(--body); -webkit-font-smoothing: antialiased; font-feature-settings: 'tnum' 1;
+  background: linear-gradient(180deg, var(--bg-top) 0, var(--bg) 420px) var(--bg) no-repeat; overflow-x: hidden;
+  padding: env(safe-area-inset-top) 0 calc(92px + env(safe-area-inset-bottom)); }
+::selection { background: rgba(0, 147, 231, .45); color: #fff; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; text-align: inherit; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+input { caret-color: var(--ink); }
+svg { display: block; overflow: visible; }
+svg.fit { width: 100%; height: auto; }
+svg text { font-family: var(--body); font-size: 11px; font-weight: 500; fill: var(--faint); }
+svg text.v { fill: var(--ink); font-weight: 600; }
+svg text.m { fill: var(--muted); }
+.ph { line-height: 1; flex: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------------------------------------------------------------- page furniture */
+.page { max-width: 460px; margin: 0 auto; padding: 0 14px; }
+.top { display: flex; align-items: center; justify-content: space-between; height: 60px; padding-top: 4px; }
+.top h1, h1.title { font: 700 30px/1 var(--display); letter-spacing: -.03em; }
+h1.title { margin: 2px 0 var(--s4) 2px; }
+.daynav { display: flex; align-items: center; gap: 0; margin-left: -12px; }
+.chev, .iconbtn { width: 44px; height: 44px; display: grid; place-items: center; color: var(--muted); border-radius: var(--r-ctl); font-size: 18px; transition: transform 140ms var(--ease-out), opacity 200ms; }
+.chev:active, .iconbtn:active, .back:active { transform: scale(.94); }
+.chev:disabled { opacity: .3; cursor: default; }
+.iconbtn { margin-right: -10px; }
+.sub { display: flex; justify-content: space-between; gap: var(--s3); font-size: 13px; color: var(--muted); margin: -6px 2px var(--s3); }
+.sub span:last-child { display: inline-flex; align-items: center; gap: 5px; }
+.back { display: inline-flex; align-items: center; gap: 4px; height: 44px; padding-right: 10px; margin-left: -8px; color: var(--muted); font-weight: 500; font-size: 15px; border-radius: var(--r-ctl); transition: transform 140ms var(--ease-out); }
+.back .ph { font-size: 18px; }
+.wt { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }

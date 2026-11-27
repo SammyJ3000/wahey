@@ -1,0 +1,51 @@
+/* Wahey: entrances, screen transitions and the reduced motion overrides. Loaded last so it wins. */
+
+/* ---------------------------------------------------------------- motion
+   Entrances run once: only inside .fresh, which a screen wears for its first 1.7 seconds. After that every mark is simply there.
+   Transform and opacity only. */
+@keyframes fadeIn { from { opacity: 0; } }
+@keyframes sheetUp { from { transform: translateY(100%); } }
+@keyframes grow { from { transform: scaleY(0); } }
+@keyframes stretch { from { transform: scaleX(0); } }
+@keyframes drawX { from { transform: scaleX(.02); opacity: 0; } 30% { opacity: 1; } }
+@keyframes pop { from { opacity: 0; transform: scale(.5); } }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+@keyframes dayIn { from { opacity: 0; transform: translateX(var(--dx, 0)); } }
+@keyframes pushIn { from { opacity: 0; transform: translateX(28px); } }
+.fresh .grow { transform-box: fill-box; transform-origin: 50% 100%; animation: grow 600ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.fresh .stretch { transform-box: fill-box; transform-origin: 0 50%; animation: stretch 650ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.fresh .stretch.rtl { transform-origin: 100% 50%; }
+.fresh .draw { transform-box: fill-box; transform-origin: 0 50%; animation: drawX 800ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.fresh .pop { transform-box: fill-box; transform-origin: center; animation: pop 320ms var(--ease-out) both; animation-delay: var(--d, 500ms); }
+.fresh .rise { animation: rise 420ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.fresh.day { animation: dayIn 300ms var(--ease-out) both; }
+.screen { animation: dayIn 220ms var(--ease-out) both; }
+.detail.push { animation: pushIn 320ms var(--ease-drawer) both; }
+.detail.fade, .today.fade { animation: fadeIn 180ms ease both; }
+/* Tile to detail: the tapped tile is the same element as the detail's hero, so it grows into place while the screen slides. */
+::view-transition-group(hero) { animation-duration: 380ms; animation-timing-function: var(--ease-drawer); }
+::view-transition-old(hero), ::view-transition-new(hero) { height: 100%; width: 100%; object-fit: fill; animation-duration: 240ms; }
+@keyframes vtInR { from { opacity: 0; transform: translateX(32px); } }
+@keyframes vtOutL { to { opacity: 0; transform: translateX(-16px); } }
+@keyframes vtInL { from { opacity: 0; transform: translateX(-16px); } }
+@keyframes vtOutR { to { opacity: 0; transform: translateX(32px); } }
+html[data-nav="push"]::view-transition-old(root) { animation: vtOutL 220ms var(--ease-out) both; }
+html[data-nav="push"]::view-transition-new(root) { animation: vtInR 380ms var(--ease-drawer) both; }
+html[data-nav="pop"]::view-transition-old(root) { animation: vtOutR 200ms var(--ease-out) both; }
+html[data-nav="pop"]::view-transition-new(root) { animation: vtInL 280ms var(--ease-drawer) both; }
+html[data-nav="pop"]::view-transition-group(hero) { animation-duration: 280ms; }
+.scrub { touch-action: pan-y; cursor: crosshair; }
+@media (prefers-reduced-motion: reduce) {
+  .fresh .grow, .fresh .stretch, .fresh .draw, .fresh .pop, .fresh .rise { animation: fadeIn 200ms ease both; }
+  .fresh.day, .screen, .detail.push { animation: fadeIn 180ms ease both; }
+  .sheet .panel { animation: fadeIn 200ms ease both; }
+  .skel, .skel-t { animation: none; opacity: .6; }
+  .seg .thumb { transition: none; }
+  .t.tap:has(.hit:active), .chip:active, .btn:active, .chev:active, .iconbtn:active, .back:active, .link:active, .tab:active .pill,
+  .ask-open:active, .ch-ico:active, .ch-asks button:active, .ch-rem-save:active, .ch-send:active, .jn-send:active, .jn-edit:active, .jn-chip:active { transform: none; opacity: .8; }
+  .ch-panel { transform: none; opacity: 0; transition: opacity 180ms ease; }
+  .ch-sheet.on .ch-panel { opacity: 1; transition-duration: 180ms; }
+  .jn-msg.ok, .jn-msg.soft, .jn-msg.bad { animation: fadeIn 200ms ease both; }
+  .jn-field.busy .jn-send .ph { animation-duration: 1600ms; }
+  .ba-how summary .ph { transition: none; }
+}

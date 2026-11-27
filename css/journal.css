@@ -1,0 +1,44 @@
+/* Wahey: the journal tile and what affects your recovery. */
+
+/* ---------------------------------------------------------------- journal and what affects you
+   One line or one tap. A logged habit is a selection, so it is white; nothing here uses the recovery colours or strain blue. */
+.jn label { cursor: text; }
+.jn-field { display: flex; align-items: flex-end; gap: 2px; min-height: 48px; margin-top: var(--s3); padding: 2px 2px 2px 14px; border-radius: var(--r-ctl); background: var(--bg); box-shadow: inset 0 0 0 1px transparent; transition: box-shadow 200ms; }
+.jn-field:focus-within { box-shadow: inset 0 0 0 1px var(--ink); }
+.jn-field textarea { flex: 1; min-width: 0; display: block; resize: none; overflow-y: auto; scrollbar-width: none; background: none; border: 0; outline: none; color: var(--ink); font: inherit; font-size: 16px; line-height: 22px; padding: 11px 0; max-height: 198px; caret-color: var(--ink); }
+.jn-field textarea::placeholder { color: var(--muted); }
+.jn-field.busy textarea { opacity: .5; }
+.jn-send { flex: none; width: 44px; height: 44px; display: grid; place-items: center; transition: opacity 200ms, transform 140ms var(--ease-out); }
+.jn-send i.sq { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-size: 17px; font-style: normal; }
+.jn-send:active { transform: scale(.94); }
+.jn-send:disabled { opacity: .3; cursor: default; }
+.jn-field.busy .jn-send { opacity: 1; }
+.jn-field.busy .jn-send .ph { animation: spin 800ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.jn-msg { display: flex; align-items: flex-start; gap: 6px; margin-top: var(--s2); font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.jn-msg:empty { display: none; }
+.jn-msg .ph { font-size: 14px; margin-top: 2px; color: var(--soft); }
+.jn-msg.bad { color: var(--ink); }
+.jn-msg.ok, .jn-msg.soft, .jn-msg.bad { animation: rise 300ms var(--ease-out) both; }
+.jn-note { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); margin-top: var(--s3); padding: 2px 2px 2px 14px; min-height: 48px; border-radius: var(--r-ctl); background: var(--bg); }
+.jn-note p { font-size: 15px; line-height: 1.45; color: var(--soft); padding: 11px 0; overflow-wrap: anywhere; }
+.jn-edit { flex: none; display: inline-flex; align-items: center; gap: 5px; height: 44px; padding: 0 var(--s3); border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--muted); transition: transform 140ms var(--ease-out); }
+.jn-edit:active { transform: scale(.96); }
+.jn-edit .ph { font-size: 14px; }
+/* 36px to look at, 44px to hit: the button is the 44, the pill inside it is the 36. */
+.jn-chips { display: flex; flex-wrap: wrap; gap: 0 6px; margin: 6px 0 -4px; }
+.jn-chip { display: inline-flex; align-items: center; max-width: 100%; height: 44px; transition: transform 140ms var(--ease-out), opacity 200ms; }
+.jn-chip > span { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; height: 36px; padding: 0 var(--s3); border-radius: 12px; background: var(--bg); color: var(--soft); font-size: 13.5px; font-weight: 500; white-space: nowrap; transition: background-color 200ms, color 200ms; }
+.jn-chip b { font-weight: inherit; overflow: hidden; text-overflow: ellipsis; }
+.jn-chip .ph { font-size: 12px; color: var(--muted); }
+.jn-chip.plain > span { background: transparent; box-shadow: inset 0 0 0 1px var(--line2); color: var(--muted); }
+.jn-chip.on > span { background: var(--ink); color: var(--bg); font-weight: 600; box-shadow: none; }
+.jn-chip.on .ph { color: var(--bg); opacity: .6; }
+.jn-chip em { font-style: normal; font-weight: 500; opacity: .7; }
+.jn-chip:active { transform: scale(.96); }
+.jn-chip:disabled { opacity: .55; cursor: default; }
+.pips { grid-template-columns: repeat(5, 1fr); margin-top: var(--s2); }
+.jn-row { padding: 14px 0; border-top: 1px solid var(--line); }
+.jn-row:first-of-type { border-top: 0; padding-top: 0; }
+.jn-axis { display: flex; justify-content: space-between; font-size: 11px; font-weight: 500; color: var(--faint); margin: var(--s3) 0 10px; }
+.jn-name { font-size: 14px; font-weight: 500; color: var(--ink); }

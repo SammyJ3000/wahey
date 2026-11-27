@@ -1,0 +1,25 @@
+/* Wahey: the body age tiles at the foot of Trends. */
+
+/* ---------------------------------------------------------------- body age
+   A tile group at the foot of Trends. The inputs lead and the sum is the last tile. Ink, arrows and words; no state colours. */
+.sect { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); margin: var(--s8) 2px var(--s3); }
+.sect h2 { font: 700 24px/1.1 var(--display); letter-spacing: -.02em; }
+.ba-ask label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); }
+.ba-ask-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s2); margin-top: var(--s2); }
+.ba-ask input { width: 100%; min-width: 0; height: 52px; border-radius: var(--r-ctl); background: var(--bg); border: 1px solid var(--line2); color: var(--ink); font: inherit; font-size: 16px; padding: 0 14px; color-scheme: dark; -webkit-appearance: none; appearance: none; transition: border-color 200ms; }
+.ba-ask input:focus { outline: none; border-color: var(--ink); }
+.ba-ask .btn { width: auto; padding: 0 var(--s6); border-radius: var(--r-ctl); }
+.ba-ask .cap[role="alert"] { color: var(--ink); }
+.ba-banner { display: flex; gap: 9px; align-items: flex-start; margin-top: var(--s3); padding: var(--s3) 14px; border-radius: var(--r-ctl); box-shadow: inset 0 0 0 1px var(--muted); font-size: 13px; font-weight: 500; line-height: 1.45; color: var(--ink); }
+.ba-banner .ph { font-size: 16px; margin-top: 1px; }
+.ba-off .ba-yrs { color: var(--faint); }
+.ba-foot { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); margin-top: 6px; }
+.ba-foot span:last-child { text-align: right; }
+.ba-how { margin: var(--s3) 0 -12px; border-top: 1px solid var(--line2); }
+.ba-how[open] { margin-bottom: -6px; }
+.ba-how summary { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); min-height: 48px; font-size: 14px; font-weight: 500; color: var(--soft); cursor: pointer; list-style: none; -webkit-tap-highlight-color: transparent; }
+.ba-how summary::-webkit-details-marker { display: none; }
+.ba-how summary .ph { font-size: 14px; color: var(--muted); transition: transform 240ms var(--ease-out); }
+.ba-how[open] summary .ph { transform: rotate(180deg); }
+.ba-how p { font-size: 13px; line-height: 1.5; color: var(--muted); margin-bottom: 10px; text-wrap: pretty; }
+.textlink { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 4px; }
