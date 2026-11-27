@@ -15,9 +15,9 @@
     "@vercel/blob": "^2.9.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "eslint": "^9.39.5",
-    "globals": "^16.5.0"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.16.0",
+    "globals": "^17.14.0"
   },
   "overrides": {
     "zod": "^4.6.6"
