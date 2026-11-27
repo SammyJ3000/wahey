@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node executions/dev-server.js",
     "sample-data": "node executions/make_sample_data.js",
-    "test": "node tests/test-api-chat.js",
+    "test": "node --test \"tests/test-*.js\"",
     "lint": "eslint ."
   },
   "engines": {
