@@ -1,0 +1,12 @@
+# Only the app goes live.
+executions
+tests
+docs
+logs
+inputs
+tmp
+.env*
+node_modules
+README.md
+.github
+eslint.config.mjs

@@ -1,0 +1,8 @@
+{
+  "_note": "The coach model lives here, not in code. Update it when a better model ships.",
+  "coach_model": "claude-sonnet-5-5",
+  "shortcut_from": null,
+  "gym_corrections": {
+    "_note": "One-off fixes for sessions the gym app filed under the wrong day, keyed by the gym app's session id. Example: \"<session id>\": { \"date\": \"YYYY-MM-DD\", \"start\": \"ISO time\", \"end\": \"ISO time\" }. Never written back to the gym app."
+  }
+}
